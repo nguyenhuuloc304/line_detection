@@ -70,6 +70,14 @@ def get_averaged_line_params(lineParams, leftHoughLinesExist, rightHoughLinesExi
 
     return [a_left, b_left, a_right, b_right]
 
+def unit_vector(vector):
+    return vector / np.linalg.norm(vector)
+
+def angle_between(v1, v2):
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
 def processImage (image):
     grey_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     kernel_size = 5
@@ -194,6 +202,10 @@ def processImage (image):
         else:
             if(x1_center > x_center + 10):
                 turn = "Phai +" + str(x1_center - x_center)
+        cv2.line(foundLinesImage, (x_center, y_min), (x_center, y_max), (255, 255, 255), 8)
+        pts1 = (x_center - x_center, y_max - y_min)
+        pts2 = (x2_center - x1_center, y_max - y_min)
+        turn = turn + " <=> " + str(int(angle_between(pts1, pts2) * 180)) + "`"
         cv2.putText(foundLinesImage, turn, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255))
 
 
