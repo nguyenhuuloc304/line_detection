@@ -168,20 +168,34 @@ def processImage (image):
         pts = np.array([[x1_left, y_max - 10], [x2_left, y_min - 10], [x2_left, y_min - 50], [x1_left, y_max - 200]],
                        np.int32)
         pts = pts.reshape((-1, 1, 2))
-        cv2.polylines(foundLinesImage, [pts], True, (0 , 0, 255), 2)
+        cv2.polylines(foundLinesImage, [pts], True, (0 , 255, 255), 2)
 
     if (a_right != 0):
         cv2.line(foundLinesImage, (x1_right, y_max), (x2_right, y_min), [255, 0, 0], 7)
         pts = np.array([[x1_right, y_max - 10], [x2_right, y_min - 10], [x2_right, y_min - 50], [x1_right, y_max - 200]],
                        np.int32)
         pts = pts.reshape((-1, 1, 2))
-        cv2.polylines(foundLinesImage, [pts], True, (0, 0, 255), 2)
+        cv2.polylines(foundLinesImage, [pts], True, (0, 255, 255), 2)
     if(a_left != 0) and (a_right != 0):
         pts = np.array(
-            [[x1_left, y_max], [x2_left, y_min], [x2_right, y_min], [x1_right, y_max]],
-            np.int32)
+            [[x1_left, y_max], [x2_left, y_min], [x2_right, y_min], [x1_right, y_max]], np.int32)
         pts = pts.reshape((-1, 1, 2))
         cv2.fillConvexPoly(foundLinesImage, pts, (0, 255, 0))
+        x1_center = int((x1_left + x1_right) / 2)
+        x2_center = int((x2_left + x2_right) / 2)
+        x_center = int(imshape[1] / 2)
+        pts1 = (x2_center, y_min + 30)
+        pts2 = (x1_center, y_max - 30)
+        cv2.line(foundLinesImage, (x_center, y_min), (x_center, y_max), (255, 255, 0), 3)
+        turn = "Giua"
+        cv2.arrowedLine(foundLinesImage, pts2, pts1, (0, 0, 255), 3)
+        if(x1_center < x_center - 10):
+            turn = "Trai -" + str(x_center - x1_center)
+        else:
+            if(x1_center > x_center + 10):
+                turn = "Phai +" + str(x1_center - x_center)
+        cv2.putText(foundLinesImage, turn, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255))
+
 
     origWithFoundLanes = cv2.addWeighted(foundLinesImage, 0.3, image, 1., 0.)
 
