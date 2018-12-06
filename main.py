@@ -165,11 +165,25 @@ def processImage (image):
 
     if (a_left != 0):
         cv2.line(foundLinesImage, (x1_left, y_max), (x2_left, y_min), [255, 0, 0], 7)
+        pts = np.array([[x1_left, y_max - 10], [x2_left, y_min - 10], [x2_left, y_min - 50], [x1_left, y_max - 200]],
+                       np.int32)
+        pts = pts.reshape((-1, 1, 2))
+        cv2.polylines(foundLinesImage, [pts], True, (0 , 0, 255), 2)
 
     if (a_right != 0):
         cv2.line(foundLinesImage, (x1_right, y_max), (x2_right, y_min), [255, 0, 0], 7)
+        pts = np.array([[x1_right, y_max - 10], [x2_right, y_min - 10], [x2_right, y_min - 50], [x1_right, y_max - 200]],
+                       np.int32)
+        pts = pts.reshape((-1, 1, 2))
+        cv2.polylines(foundLinesImage, [pts], True, (0, 0, 255), 2)
+    if(a_left != 0) and (a_right != 0):
+        pts = np.array(
+            [[x1_left, y_max], [x2_left, y_min], [x2_right, y_min], [x1_right, y_max]],
+            np.int32)
+        pts = pts.reshape((-1, 1, 2))
+        cv2.fillConvexPoly(foundLinesImage, pts, (0, 255, 0))
 
-    origWithFoundLanes = cv2.addWeighted(foundLinesImage, 0.8, image, 1., 0.)
+    origWithFoundLanes = cv2.addWeighted(foundLinesImage, 0.3, image, 1., 0.)
 
     return origWithFoundLanes
 
